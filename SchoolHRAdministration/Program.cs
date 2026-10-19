@@ -1,73 +1,19 @@
 ﻿using System;
 using HRAdministrationAPI;
 using System.Collections.Generic;
+using System.Linq;
+using static SchoolHRAdministration.Program;
 
 namespace SchoolHRAdministration
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public enum EmployeeType
         {
-           decimal totalSalary = 0;
-            List<IEmployee> employees = new List<IEmployee>();
-            SeedData(employees);
-            foreach (IEmployee employee in employees)
-            { 
-                totalSalary += employee.Salary;
-            }
-            Console.WriteLine($"Total Salary of all employees(Including bonuses): {totalSalary}");
-
-            Console.ReadKey();
-        }
-
-        public static void SeedData(List<IEmployee> employees)
-        {
-            IEmployee teacher1 = new Teacher
-            {
-                ID = 1,
-                FirstName = "John",
-                LastName = "Doe",
-                Salary = 50000
-            };
-
-            employees.Add(teacher1);
-
-            IEmployee teacher2 = new Teacher
-            {
-                ID = 2,
-                FirstName = "Jane",
-                LastName = "Smith",
-                Salary = 55000
-            };
-            employees.Add(teacher2);
-
-            IEmployee headOfDepartment = new HeadOfDepartment
-            {
-                ID = 3,
-                FirstName = "Alice",
-                LastName = "Johnson",
-                Salary = 60000,
-            };
-            employees.Add(headOfDepartment);
-
-            IEmployee deputyHeadMaster = new DeputyHeadMaster
-            {
-                ID = 4,
-                FirstName = "Bob",
-                LastName = "Brown",
-                Salary = 65000
-            };
-            employees.Add(deputyHeadMaster);
-
-            IEmployee headMaster = new HeadMaster
-            {
-                ID = 5,
-                FirstName = "Charlie",
-                LastName = "Davis",
-                Salary = 70000
-            };
-
-            employees.Add(headMaster);
+            Teacher,
+            HeadOfDepartment,
+            DeputyHeadMaster,
+            HeadMaster
         }
     }
 
@@ -89,5 +35,58 @@ namespace SchoolHRAdministration
     public class HeadMaster : EmployeeBase
     {
         public override decimal Salary { get => base.Salary + (base.Salary + 0.05m); }
+    }
+
+    public static class EmployeeFactory
+    {
+        public static IEmployee GetEmployeeInstance(EmployeeType employeeType, int id, string firstName, string lastName, decimal salary)
+        {
+            IEmployee employee = null;
+
+            switch (employeeType) 
+            {
+                case EmployeeType.Teacher:
+                    employee = new Teacher
+                    {
+                        ID = id,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Salary = salary
+                    };
+                    break;
+                case EmployeeType.HeadOfDepartment:
+                    employee = new HeadOfDepartment
+                    {
+                        ID = id,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Salary = salary
+                    };
+                    break;
+                case EmployeeType.DeputyHeadMaster:
+                    employee = new DeputyHeadMaster
+                    {
+                        ID = id,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Salary = salary
+                    };
+                    break;
+                case EmployeeType.HeadMaster:
+                    employee = new HeadMaster
+                    {
+                        ID = id,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Salary = salary
+                    };
+                    break;
+
+                default:
+                    break;
+            }
+
+            return employee;
+        }
     }
 }
